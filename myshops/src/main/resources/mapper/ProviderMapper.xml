@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace:填写映射当前的Mapper接口，所有的增删改查的参数和返回值类型，
+		就可以直接填写缩写，不区分大小写，直接通过方法名去找类型-->
+<mapper namespace="com.danding.myshop.mapper.ProviderMapper">
+
+    <select id="getAllProvider" resultType="com.danding.myshop.entity.Provider">
+        select * from provider
+        <where>
+            <if test="params.providerNo != null and params.providerNo != ''">
+                and providerNo = #{params.providerNo}
+            </if>
+            <if test="params.providerName != null and params.providerName != ''">
+                and providerName like concat('%',#{params.providerName},'%')
+            </if>
+        </where>
+
+        limit #{startSize}, #{pageSize}
+    </select>
+
+    <select id="findProviderByColumn" resultType="com.danding.myshop.entity.Provider">
+        select * from provider where ${columnN} = #{columnV}
+    </select>
+
+    <insert id="addProvider" parameterType="com.danding.myshop.entity.Provider"
+    useGeneratedKeys="true" keyProperty="id">
+        insert into provider(providerNo, providerName, address, cellPhone, phone)
+        values(#{providerNo}, #{providerName}, #{address}, #{cellPhone}, #{phone})
+    </insert>
+
+    <select id="getProviderById" resultType="com.danding.myshop.entity.Provider">
+        select * from provider where id = #{id}
+    </select>
+
+    <update id="updateProvier" parameterType="com.danding.myshop.entity.Provider">
+        update provider
+         <set>
+             <if test="providerNo != null or providerNo != ''">
+                 providerNo = #{providerNo},
+             </if>
+             <if test="providerName != null or providerName != ''">
+                 providerName = #{providerName},
+             </if>
+             <if test="address != null or address != ''">
+                 address = #{address},
+             </if>
+             <if test="cellPhone != null or cellPhone != ''">
+                 cellPhone = #{cellPhone},
+             </if>
+             <if test="phone != null or phone != ''">
+                 phone = #{phone}
+             </if>
+         </set>
+          where id = #{id}
+
+    </update>
+
+    <delete id="deleteProviderById">
+        delete from provider where id = #{id}
+    </delete>
+
+    <select id="getProviderByColumn" resultType="com.danding.myshop.entity.Provider">
+        select * from provider where ${columnN} = #{columnV}
+    </select>
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace:填写映射当前的Mapper接口，所有的增删改查的参数和返回值类型，
+		就可以直接填写缩写，不区分大小写，直接通过方法名去找类型-->
+<mapper namespace="com.danding.myshop.mapper.SalesMapper">
+
+    <select id="getAllSale" parameterType="map" resultType="com.danding.myshop.entity.Sale">
+        select * from sales
+        <where>
+            status = '0'
+            <if test="params.saleNo != null and params.saleNo != ''">
+                and saleNo = #{params.saleNo}
+            </if>
+            <if test="params.custNo != null and params.custNo != ''">
+                and custNo = #{params.custNo}
+            </if>
+            <if test="params.custName != null and params.custNo !=''">
+                and custName like concat('%',#{params.custName}, '%')
+            </if>
+            <if test="params.saleDate != null">
+                and saleDate = #{params.saleDate, jdbcType=DATE}
+            </if>
+            <if test="params.payStatus != null and params.payStatus != ''">
+                and payStatus = #{params.payStatus}
+            </if>
+        </where>
+
+        limit #{params.startSize, javaType=int}, #{params.pageSize, javaType=int}
+    </select>
+
+    <select id="getSaleById" resultType="com.danding.myshop.entity.Sale">
+        select * from sales where id = #{id}
+    </select>
+
+    <update id="updateSale" parameterType="com.danding.myshop.entity.Sale">
+        update sales
+          <set>
+              <if test="saleNo != null and saleNo != ''">
+                  saleNo = #{saleNo},
+              </if>
+              <if test="saleName != null and saleName != ''">
+                  saleName = #{saleName},
+              </if>
+              <if test="custNo != null and custNo != ''">
+                  custNo = #{custNo},
+              </if>
+              <if test="custName != null and custName != ''">
+                  custName = #{custName},
+              </if>
+              <if test="price != null and price != ''">
+                  price = #{price},
+              </if>
+              <if test="amount != null and amount != ''">
+                  amount = #{amount},
+              </if>
+              <if test="totalPrice != null and totalPrice != ''">
+                  totalPrice = #{totalPrice},
+              </if>
+              <if test="payStatus != null and payStatus != ''">
+                  payStatus = #{payStatus},
+              </if>
+              <if test="comments != null and comments != ''">
+                  comments = #{comments}
+              </if>
+          </set>
+        where id  = #{id}
+    </update>
+
+    <delete id="deleteSaleById" parameterType="long">
+        update sales set status='1' where id = #{id}
+    </delete>
+
+    <insert id="addSale" parameterType="com.danding.myshop.entity.Sale"
+    useGeneratedKeys="true" keyProperty="id">
+
+        insert into sales(saleNo,saleName,custNo,custName,price,amount,totalPrice,saleDate,
+        payStatus,comments,status)
+        values(#{saleNo}, #{saleName}, #{custNo}, #{custName}, #{price}, #{amount}, #{totalPrice}, #{saleDate},
+        #{payStatus}, #{comments}, #{status})
+    </insert>
+</mapper>

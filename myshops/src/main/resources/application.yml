@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/myshop?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    password: root
+    username: root
+
+#===========mybatis
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+
+
+
+
+#showsql
+logging:
+  level:
+    com:
+      danding:
+        myshop:
+          mapper: debug

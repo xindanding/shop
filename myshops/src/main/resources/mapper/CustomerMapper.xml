@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace:填写映射当前的Mapper接口，所有的增删改查的参数和返回值类型，
+		就可以直接填写缩写，不区分大小写，直接通过方法名去找类型-->
+<mapper namespace="com.danding.myshop.mapper.CustomerMapper">
+
+
+    <sql id="selectByColumn">
+        select * from customer where ${columnN} = #{columnV}
+    </sql>
+
+    <select id="findAllCustomer" resultType="com.danding.myshop.entity.Customer">
+        select id,custNo,custName,address,cellPhone,phone,
+          CASE status
+            when '0' THEN '终止合作'
+            ELSE  '合作中'
+          END AS status
+        from customer
+        <where>
+            <if test="params.custNo != null and params.custNo != ''">
+                and custNo = #{params.custNo}
+            </if>
+            <if test="params.custName != null and params.custName !=''">
+                and custName like concat('%',#{params.custName}, '%')
+            </if>
+            <if test="params.status != null and params.status != ''">
+                and status = #{params.status}
+            </if>
+        </where>
+        limit #{startSize},#{pageSize}
+    </select>
+
+    <delete id="deleteCustomerById">
+        delete from customer where id = #{id}
+    </delete>
+
+    <select id="getCustomerById" resultType="com.danding.myshop.entity.Customer">
+        select * from customer where id = #{id}
+    </select>
+
+    <update id="updateCustomer" parameterType="com.danding.myshop.entity.Customer">
+        update customer set custNo = #{custNo}, custName=#{custName}, address=#{address},
+        cellPhone=#{cellPhone}, phone=#{phone},status=#{status}
+        where id = #{id}
+    </update>
+
+    <select id="getCustomerByColumn" resultType="com.danding.myshop.entity.Customer">
+       <include refid="selectByColumn"></include>
+    </select>
+
+    <select id="getCustomerByColumnExcludeId" resultType="com.danding.myshop.entity.Customer">
+        <include refid="selectByColumn"></include>
+        <if test="id != null">
+            and id != #{id}
+        </if>
+    </select>
+
+    <insert id="addCustomer" parameterType="com.danding.myshop.entity.Customer"
+            useGeneratedKeys="true" keyProperty="id">
+
+        insert into customer(custNo, custName, address, cellPhone, phone, status)
+        values(#{custNo}, #{custName}, #{address}, #{cellPhone}, #{phone}, #{status})
+    </insert>
+</mapper>

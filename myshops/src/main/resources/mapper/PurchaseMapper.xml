@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace:填写映射当前的Mapper接口，所有的增删改查的参数和返回值类型，
+		就可以直接填写缩写，不区分大小写，直接通过方法名去找类型-->
+<mapper namespace="com.danding.myshop.mapper.PurchaseMapper">
+
+    <insert id="addPurchase" parameterType="com.danding.myshop.entity.Purchase"
+    useGeneratedKeys="true" keyProperty="id">
+        insert into purchase(orderNo, orderName, providerNo, providerName,
+        price, amount, totalPrice, payStatus, orderDate, comments, status)
+        values(#{orderNo}, #{orderName}, #{providerNo}, #{providerName},
+        #{price}, #{amount}, #{totalPrice}, #{payStatus}, #{orderDate}, #{comments}, #{status})
+    </insert>
+
+    <select id="getAllPurchase" parameterType="map" resultType="com.danding.myshop.entity.Purchase">
+        select * from purchase
+        <where>
+            status = '0'
+            <if test="params.orderNo != null and params.orderNo != ''">
+                and orderNo = #{params.orderNo}
+            </if>
+            <if test="params.orderName != null and params.orderName !=''">
+                and orderName like concat('%',#{params.orderName},'%')
+            </if>
+            <if test="params.orderDate != null">
+                and orderDate = #{params.orderDate, jdbcType=DATE}
+            </if>
+            <if test="params.payStatus != null and params.payStatus !=''">
+                and payStatus = #{params.payStatus}
+            </if>
+        </where>
+        limit #{params.startSize, javaType=int}, #{params.pageSize}
+    </select>
+
+    <select id="getPurchaseById" resultType="com.danding.myshop.entity.Purchase">
+        select * from purchase where id = #{id}
+    </select>
+
+    <update id="updatePurchase">
+        update purchase
+        <set>
+            <if test="orderNo!= null and orderNo !=''">
+                orderNo = #{orderNo},
+            </if>
+            <if test="orderName != null and orderName !=''">
+                orderName = #{orderName},
+            </if>
+            <if test="providerNo != null and providerNo != ''">
+                providerNo = #{providerNo},
+            </if>
+            <if test="providerName != null and providerName != ''">
+                providerName = #{providerName},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="amount != null">
+                amount = #{amount},
+            </if>
+            <if test="totalPrice != null">
+                totalPrice = #{totalPrice},
+            </if>
+            <if test="payStatus != null and payStatus !=''">
+                payStatus = #{payStatus},
+            </if>
+            <if test="orderDate != null">
+                orderDate = #{orderDate},
+            </if>
+            <if test="comments != null and comments != ''">
+                comments = #{comments},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="deletePurchaseById">
+        update purchase set status = '1' where id = #{id}
+    </update>
+</mapper>
